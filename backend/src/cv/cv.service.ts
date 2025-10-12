@@ -44,19 +44,20 @@ export class CvService {
       },
     });
 
-    // Queue parsing job
-    await this.queue.addCvParseJob({
-      cvId: cv.id,
-      userId,
-      s3Key: key,
-      mimeType: file.mimetype,
-    });
-
     // Update status to parsing
     await this.prisma.cv.update({
       where: { id: cv.id },
       data: { status: CvStatus.PARSING },
     });
+
+    // Parse INSTANTLY (not queued) for MVP
+    setTimeout(async () => {
+      try {
+        await this.parseInstantly(cv.id);
+      } catch (error) {
+        console.error('Parse error:', error);
+      }
+    }, 100);
 
     // Audit log
     await this.prisma.auditLog.create({

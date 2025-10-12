@@ -70,4 +70,9 @@ export class StorageService {
     // For local storage, just return the local URL
     return `/uploads/${key}`;
   }
+
+  async getSignedDownloadUrl(key: string, expiresIn: number = 3600): Promise<string> {
+    // For local storage, just return the local URL
+    return `/uploads/${key}`;
+  }
 }
