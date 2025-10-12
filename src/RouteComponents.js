@@ -37,3 +37,6 @@ export const AuthRoute = ({ dispatch, component, ...rest }) => {
     )
   }
 }
+
+// Default export
+export default UserRoute;

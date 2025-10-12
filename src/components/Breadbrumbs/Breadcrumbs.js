@@ -32,9 +32,15 @@ const Breadcrumbs = (props) => {
   }
 
   const getBreadcrumbsTitle = () => {
-    const routeArray = props.url.split("/")
-    const title = routeArray[routeArray.length - 1]
-    return title[0].toUpperCase() + title.slice(1)
+    if (!props.url || props.url === '/') {
+      return 'Dashboard';
+    }
+    const routeArray = props.url.split("/").filter(part => part);
+    if (routeArray.length === 0) {
+      return 'Dashboard';
+    }
+    const title = routeArray[routeArray.length - 1];
+    return title[0].toUpperCase() + title.slice(1);
   }
 
   return (

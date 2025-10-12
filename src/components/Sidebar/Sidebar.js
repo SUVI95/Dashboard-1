@@ -32,44 +32,103 @@ const Sidebar = (props) => {
     <nav className={cn(s.root, {[s.sidebarOpen]: burgerBtnToggled})}>
       <header className={s.logo}>
         <SofiaLogo/>
-        <span className={s.title}>SOFIA</span>
+        <span className={s.title}>DUUNIJOBS</span>
       </header>
       <ul className={s.nav}>
+        <LinksGroup
+          onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={props.activeItem}
+          header="🧪 Test Page"
+          isHeader
+          iconName={<i className="eva eva-checkmark-circle-outline"/>}
+          link="/test"
+          index="test"
+        />
         <LinksGroup
           onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
           activeItem={props.activeItem}
           header="Dashboard"
           isHeader
           iconName={<i className="eva eva-home-outline"/>}
-          link="/template/dashboard"
+          link="/dashboard"
           index="dashboard"
-          badge="9"
         />
-        <h5 className={[s.navTitle, s.groupTitle].join(" ")}>TEMPLATE</h5>
+        <h5 className={[s.navTitle, s.groupTitle].join(" ")}>AI FEATURES</h5>
         <LinksGroup
           onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
           activeItem={props.activeItem}
-          header="User"
+          header="My CVs"
+          isHeader
+          iconName={<i className="eva eva-file-text-outline"/>}
+          link="/cvs"
+          index="cvs"
+        />
+        <LinksGroup
+          onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={props.activeItem}
+          header="AI Assistant"
+          isHeader
+          iconName={<i className="eva eva-bulb-outline"/>}
+          link="/ai-assistant"
+          index="ai-assistant"
+        />
+        <LinksGroup
+          onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={props.activeItem}
+          header="Job Board"
+          isHeader
+          iconName={<i className="eva eva-briefcase-outline"/>}
+          link="/jobs"
+          index="jobs"
+        />
+        <LinksGroup
+          onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={props.activeItem}
+          header="Applications"
+          isHeader
+          iconName={<i className="eva eva-paper-plane-outline"/>}
+          link="/applications"
+          index="applications"
+        />
+        <h5 className={[s.navTitle, s.groupTitle].join(" ")}>ACCOUNT</h5>
+        <LinksGroup
+          onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={props.activeItem}
+          header="Profile"
           isHeader
           iconName={<i className="eva eva-person-outline"/>}
+          link="/profile"
+          index="profile"
+        />
+        <LinksGroup
+          onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={props.activeItem}
+          header="Settings"
+          isHeader
+          iconName={<i className="eva eva-settings-outline"/>}
+          link="/template/password"
+          index="settings"
+        />
+        <h5 className={[s.navTitle, s.groupTitle].join(" ")}>ADMIN</h5>
+        <LinksGroup
+          onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
+          activeItem={props.activeItem}
+          header="Admin Panel"
+          isHeader
+          iconName={<i className="eva eva-shield-outline"/>}
           link="/admin"
           index="admin"
           exact={false}
           childrenLinks={[
             {
-              header: 'My Profile', link: '/template/user/profile',
+              header: 'Dashboard', link: '/admin/dashboard',
             },
             {
               header: 'User Management', link: '/admin/users',
             },
-            {
-              header: 'Edit Profile', link: '/template/edit_profile',
-            },
-            {
-              header: 'Change Password', link: '/template/password'
-            },
           ]}
         />
+        <h5 className={[s.navTitle, s.groupTitle].join(" ")}>TEMPLATE</h5>
         <LinksGroup
           onActiveSidebarItemChange={activeItem => props.dispatch(changeActiveSidebarItem(activeItem))}
           activeItem={props.activeItem}

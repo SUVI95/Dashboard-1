@@ -1,0 +1,93 @@
+═══════════════════════════════════════════════════════════
+🎯 YOUR NEXT STEPS - SIMPLE GUIDE
+═══════════════════════════════════════════════════════════
+
+Your Neon Project:
+  Name: DuuniDash
+  ID: soft-cell-88391411
+
+═══════════════════════════════════════════════════════════
+STEP 1: Get Your Connection String (2 minutes)
+═══════════════════════════════════════════════════════════
+
+Visit this URL:
+👉 https://console.neon.tech/app/projects/soft-cell-88391411
+
+Look for "Connection String" or "Connection Details"
+
+Copy the ENTIRE string (looks like):
+postgresql://username:password@ep-xxxxx.aws.neon.tech/dbname?sslmode=require
+
+═══════════════════════════════════════════════════════════
+STEP 2: Update Your .env File (1 minute)
+═══════════════════════════════════════════════════════════
+
+Open file:
+📁 /Users/gisrieliamaro/Dashboard-1-2/backend/.env
+
+Find line 7 (DATABASE_URL=...)
+
+Replace with your copied connection string
+
+Save the file
+
+═══════════════════════════════════════════════════════════
+STEP 3: Run Setup Script (1 minute)
+═══════════════════════════════════════════════════════════
+
+Open Terminal and run:
+
+cd /Users/gisrieliamaro/Dashboard-1-2
+./QUICK_START.sh
+
+This will:
+✅ Deploy database schema
+✅ Seed demo accounts
+✅ Tell you exactly how to start
+
+═══════════════════════════════════════════════════════════
+STEP 4: Start Your Platform (30 seconds)
+═══════════════════════════════════════════════════════════
+
+Terminal 1 - Backend:
+cd /Users/gisrieliamaro/Dashboard-1-2/backend
+npm run start:dev
+
+Terminal 2 - Frontend:
+cd /Users/gisrieliamaro/Dashboard-1-2
+npm start
+
+═══════════════════════════════════════════════════════════
+STEP 5: Open & Test (30 seconds)
+═══════════════════════════════════════════════════════════
+
+Browser:
+http://localhost:3000
+
+Login with:
+Email: candidate@test.com
+Password: Candidate123!
+
+Upload a CV and watch AI work! 🤖
+
+═══════════════════════════════════════════════════════════
+📚 HELPFUL DOCS
+═══════════════════════════════════════════════════════════
+
+Can't find connection string?
+→ Read: GET_NEON_CONNECTION.md
+
+Want full details?
+→ Read: START_HERE.md
+
+Complete feature list?
+→ Read: FINAL_SUMMARY.md
+
+═══════════════════════════════════════════════════════════
+⏱️  TOTAL TIME: ~5 MINUTES
+═══════════════════════════════════════════════════════════
+
+You're almost there! Just get that connection string from:
+https://console.neon.tech/app/projects/soft-cell-88391411
+
+═══════════════════════════════════════════════════════════

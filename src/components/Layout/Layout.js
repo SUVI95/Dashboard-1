@@ -9,6 +9,7 @@ import Footer from "../Footer/Footer";
 import Breadcrumbs from "../Breadbrumbs/Breadcrumbs";
 
 import Dashboard from "../../pages/dashboard/Dashboard";
+import CandidateDashboard from "../../pages/dashboard/CandidateDashboard";
 import Profile from "../../pages/profile/Profile";
 import UserListPage from "../Users/list/UsersListPage";
 import UserViewPage from "../Users/view/UsersViewPage";
@@ -46,6 +47,15 @@ import Calendar from "../../pages/calendar/Calendar";
 import Login from "../../pages/auth/login/Login";
 import Register from "../../pages/auth/register/Register";
 
+// DuuniJobs new pages
+import CvManager from "../../pages/cvs/CvManager";
+import PremiumCvPreview from "../../pages/cvs/PremiumCvPreview";
+import JobBoard from "../../pages/jobs/JobBoard";
+import AIAssistant from "../../pages/ai/AIAssistant";
+import AdminDashboard from "../../pages/admin/AdminDashboard";
+import Applications from "../../pages/applications/Applications";
+import TestPage from "../../pages/test/TestPage";
+
 import s from "./Layout.module.scss";
 
 const Layout = (props) => {
@@ -57,11 +67,20 @@ const Layout = (props) => {
         <main className={s.content}>
           <Breadcrumbs url={props.location.pathname} />
           <Switch>
-            <Route path="/template" exact render={() => <Redirect to="template/dashboard"/>} />
+            <Route path="/" exact component={CandidateDashboard}/>
+            <Route path="/test" exact component={TestPage}/>
+            <Route path="/dashboard" exact component={CandidateDashboard}/>
+            <Route path="/cvs" exact component={CvManager}/>
+            <Route path="/cvs/premium-preview/:cvId" exact component={PremiumCvPreview}/>
+            <Route path="/jobs" exact component={JobBoard}/>
+            <Route path="/ai-assistant" exact component={AIAssistant}/>
+            <Route path="/applications" exact component={Applications}/>
+            <Route path="/profile" exact component={Profile} />
             <Route path="/template/dashboard" exact component={Dashboard}/>
             <Route path="/template/user" exact render={() => <Redirect to={"/template/user/profile"} />}/>
             <Route path="/template/user/profile" exact component={Profile} />
-            <Route path="/admin" exact render={() => <Redirect to="/admin/users" />} />
+            <Route path="/admin" exact render={() => <Redirect to="/admin/dashboard" />} />
+            <Route path="/admin/dashboard" exact component={AdminDashboard} />
             <Route path="/admin/users" exact component={UserListPage} />
             <Route path="/admin/users/new" exact component={UserFormPage} />
             <Route path="/admin/users/:id/edit" exact component={UserFormPage} />
@@ -106,7 +125,6 @@ const Layout = (props) => {
             <Route path="/template/extra/login" exact component={Login} />
             <Route path="/template/extra/register" exact component={Register} />
             <Route path="/register" exact component={Register} />
-            <Route path='*' exact render={() => <Redirect to="/error" />} />
           </Switch>
         </main>
         <Footer />

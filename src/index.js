@@ -14,8 +14,8 @@ import createRootReducer from './reducers';
 import { doInit } from "./actions/auth";
 import { createHashHistory } from "history";
 
-// ** Fake Database
-import './fakeDB';
+// Fake Database removed for production
+// import './fakeDB';
 
 const history = createHashHistory();
 
@@ -39,7 +39,11 @@ export const store = createStore(
   )
 );
 
-store.dispatch(doInit());
+// Initialize auth once
+if (!window.__AUTH_INITIALIZED__) {
+  window.__AUTH_INITIALIZED__ = true;
+  store.dispatch(doInit());
+}
 
 const container = document.getElementById("root");
 const root = createRoot(container);
