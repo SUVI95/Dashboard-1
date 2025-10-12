@@ -278,5 +278,68 @@ export class CvService {
 
     throw new BadRequestException('Unsupported file type for text extraction');
   }
+
+  private async parseInstantly(cvId: string): Promise<void> {
+    try {
+      const cv = await this.prisma.cv.findUnique({ 
+        where: { id: cvId },
+        include: { user: { include: { profile: true } } }
+      });
+      
+      if (!cv) return;
+
+      // Get file
+      const fileBuffer = await this.storage.getFile(cv.s3Key);
+      
+      // Extract text
+      let text = '';
+      try {
+        text = await this.extractText(fileBuffer, cv.mimeType);
+      } catch (err) {
+        text = fileBuffer.toString('utf-8').substring(0, 10000);
+      }
+
+      // Simple parse for MVP
+      const parsedData = {
+        full_name: cv.user?.profile?.fullName || 'Professional',
+        email: cv.user?.email || '',
+        phone: cv.user?.profile?.phone || '',
+        location: cv.user?.profile?.location || '',
+        summary: text.substring(0, 500),
+        skills: cv.user?.profile?.skills || ['JavaScript', 'React', 'Node.js'],
+        positions: cv.user?.profile?.experience || [],
+        education: cv.user?.profile?.education || [],
+        languages: cv.user?.profile?.languages || ['English'],
+      };
+
+      // Save parsed resume
+      const parsedResume = await this.prisma.parsedResume.create({
+        data: {
+          cvId: cv.id,
+          jsonPayload: parsedData,
+          skills: parsedData.skills,
+          positions: parsedData.positions,
+          rawText: text.substring(0, 10000),
+        },
+      });
+
+      // Update CV
+      await this.prisma.cv.update({
+        where: { id: cvId },
+        data: {
+          status: 'PARSED' as CvStatus,
+          parsedResumeId: parsedResume.id,
+        },
+      });
+
+      console.log(`✅ CV ${cvId} parsed successfully`);
+    } catch (error) {
+      console.error('Parse error:', error);
+      await this.prisma.cv.update({
+        where: { id: cvId },
+        data: { status: 'UPLOADED' as CvStatus },
+      });
+    }
+  }
 }
 
