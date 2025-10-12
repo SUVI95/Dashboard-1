@@ -20,7 +20,9 @@ const isLocalhost = Boolean(
   )
 );
 
+// Service worker DISABLED to prevent refresh issues
 export function register(config) {
+  return; // DISABLED
   if (process.env.NODE_ENV === 'production' && 'serviceWorker' in navigator) {
     // The URL constructor is available in all browsers that support SW.
     const publicUrl = new URL(process.env.PUBLIC_URL, window.location);

@@ -39,19 +39,22 @@ export const store = createStore(
   )
 );
 
-// Initialize auth once
-if (!window.__AUTH_INITIALIZED__) {
-  window.__AUTH_INITIALIZED__ = true;
-  store.dispatch(doInit());
-}
+// Auth initialization disabled to prevent refresh loops
+// Users must login manually
+// store.dispatch(doInit());
 
 const container = document.getElementById("root");
 const root = createRoot(container);
-root.render(
+
+// Render only once - prevent double render
+if (!window.__RENDERED__) {
+  window.__RENDERED__ = true;
+  root.render(
     <Provider store={store}>
-        <App/>
+      <App/>
     </Provider>
-);
+  );
+}
 
 // If you want your app to work offline and load faster, you can change
 // unregister() to register() below. Note this comes with some pitfalls.

@@ -117,7 +117,8 @@ export function loginUser(creds) {
     // localStorage.setItem('dashboardTheme', 'dark')
     if (!config.isBackend) {
       dispatch(receiveToken('token'));
-      dispatch(doInit());
+      // Don't call doInit() - causes refresh loop
+      // dispatch(doInit());
       // dispatch(push('/app'));
       dispatch(push('/template'));
     } else {
@@ -130,7 +131,8 @@ export function loginUser(creds) {
         axios.post("/auth/signin/local", creds).then(res => {
           const token = res.data;
           dispatch(receiveToken(token));
-          dispatch(doInit());
+          // Don't call doInit() - causes refresh loop
+          // dispatch(doInit());
           dispatch(push('/template'));
         }).catch(err => {
           dispatch(authError(err.response.data));

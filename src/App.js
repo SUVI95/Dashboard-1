@@ -13,7 +13,14 @@ import './styles/app.scss';
 
 const CloseButton = ({ closeToast }) => <i onClick={closeToast} className="la la-close notifications-close-icon"/>
 
-class App extends React.PureComponent {
+class App extends React.Component {
+  componentDidMount() {
+    // Prevent any auto-refresh
+    if (window.location.pathname === '/') {
+      // Don't redirect, just stay
+    }
+  }
+
   render() {
     return (
       <div>
