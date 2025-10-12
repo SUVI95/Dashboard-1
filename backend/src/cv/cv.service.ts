@@ -246,24 +246,13 @@ export class CvService {
   async reParseCv(cvId: string, userId: string) {
     const cv = await this.getCvById(cvId, userId);
 
-    // Update status
-    await this.prisma.cv.update({
-      where: { id: cvId },
-      data: { status: CvStatus.PARSING },
-    });
-
-    // Queue parsing job
-    await this.queue.addCvParseJob({
-      cvId: cv.id,
-      userId,
-      s3Key: cv.s3Key,
-      mimeType: cv.mimeType,
-    });
+    // Parse immediately
+    await this.parseInstantly(cv.id);
 
     return {
       cvId: cv.id,
-      status: 'parsing',
-      message: 'CV parsing restarted',
+      status: 'parsed',
+      message: 'CV parsed successfully',
     };
   }
 
