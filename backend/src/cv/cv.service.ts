@@ -316,7 +316,7 @@ export class CvService {
       await this.prisma.cv.update({
         where: { id: cvId },
         data: {
-          status: 'PARSED' as CvStatus,
+          status: CvStatus.PARSED,
           parsedResumeId: parsedResume.id,
         },
       });
@@ -326,7 +326,7 @@ export class CvService {
       console.error('Parse error:', error);
       await this.prisma.cv.update({
         where: { id: cvId },
-        data: { status: 'UPLOADED' as CvStatus },
+        data: { status: CvStatus.UPLOADED },
       });
     }
   }
