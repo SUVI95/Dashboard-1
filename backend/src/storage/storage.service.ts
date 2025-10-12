@@ -1,30 +1,27 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
-import { S3Client, PutObjectCommand, GetObjectCommand, DeleteObjectCommand } from '@aws-sdk/client-s3';
-import { getSignedUrl } from '@aws-sdk/s3-request-presigner';
 import { v4 as uuidv4 } from 'uuid';
-import { Readable } from 'stream';
+import * as fs from 'fs/promises';
+import * as path from 'path';
 
 @Injectable()
 export class StorageService {
-  private s3Client: S3Client;
-  private bucketName: string;
+  private uploadPath: string;
 
   constructor(private config: ConfigService) {
-    const endpoint = this.config.get('S3_ENDPOINT');
-    const region = this.config.get('S3_REGION') || 'us-east-1';
+    this.uploadPath = path.join(process.cwd(), 'uploads');
+    this.ensureUploadDirectory();
+  }
 
-    this.s3Client = new S3Client({
-      endpoint,
-      region,
-      credentials: {
-        accessKeyId: this.config.get('S3_ACCESS_KEY_ID'),
-        secretAccessKey: this.config.get('S3_SECRET_ACCESS_KEY'),
-      },
-      forcePathStyle: true, // Needed for MinIO
-    });
-
-    this.bucketName = this.config.get('S3_BUCKET_NAME');
+  private async ensureUploadDirectory() {
+    try {
+      await fs.mkdir(this.uploadPath, { recursive: true });
+      await fs.mkdir(path.join(this.uploadPath, 'cvs'), { recursive: true });
+      await fs.mkdir(path.join(this.uploadPath, 'generated'), { recursive: true });
+      await fs.mkdir(path.join(this.uploadPath, 'avatars'), { recursive: true });
+    } catch (error) {
+      console.error('Failed to create upload directories:', error);
+    }
   }
 
   async uploadFile(
@@ -32,19 +29,11 @@ export class StorageService {
     folder: string = 'cvs',
   ): Promise<{ key: string; url: string }> {
     const key = `${folder}/${uuidv4()}-${file.originalname}`;
+    const filePath = path.join(this.uploadPath, key);
 
-    const command = new PutObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
-      Body: file.buffer,
-      ContentType: file.mimetype,
-      ServerSideEncryption: 'AES256', // Server-side encryption
-    });
+    await fs.writeFile(filePath, file.buffer);
 
-    await this.s3Client.send(command);
-
-    const url = `${this.config.get('S3_ENDPOINT')}/${this.bucketName}/${key}`;
-
+    const url = `/uploads/${key}`;
     return { key, url };
   }
 
@@ -55,68 +44,30 @@ export class StorageService {
     folder: string = 'generated',
   ): Promise<{ key: string; url: string }> {
     const key = `${folder}/${uuidv4()}-${filename}`;
+    const filePath = path.join(this.uploadPath, key);
 
-    const command = new PutObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
-      Body: buffer,
-      ContentType: mimeType,
-      ServerSideEncryption: 'AES256',
-    });
+    await fs.writeFile(filePath, buffer);
 
-    await this.s3Client.send(command);
-
-    const url = `${this.config.get('S3_ENDPOINT')}/${this.bucketName}/${key}`;
-
+    const url = `/uploads/${key}`;
     return { key, url };
   }
 
   async getFile(key: string): Promise<Buffer> {
-    const command = new GetObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
-    });
-
-    const response = await this.s3Client.send(command);
-    const stream = response.Body as Readable;
-
-    return new Promise((resolve, reject) => {
-      const chunks: Buffer[] = [];
-      stream.on('data', (chunk) => chunks.push(chunk));
-      stream.on('error', reject);
-      stream.on('end', () => resolve(Buffer.concat(chunks)));
-    });
-  }
-
-  async getSignedDownloadUrl(key: string, expiresIn: number = 3600): Promise<string> {
-    const command = new GetObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
-    });
-
-    return getSignedUrl(this.s3Client, command, { expiresIn });
+    const filePath = path.join(this.uploadPath, key);
+    return await fs.readFile(filePath);
   }
 
   async deleteFile(key: string): Promise<void> {
-    const command = new DeleteObjectCommand({
-      Bucket: this.bucketName,
-      Key: key,
-    });
-
-    await this.s3Client.send(command);
-  }
-
-  async fileExists(key: string): Promise<boolean> {
+    const filePath = path.join(this.uploadPath, key);
     try {
-      const command = new GetObjectCommand({
-        Bucket: this.bucketName,
-        Key: key,
-      });
-      await this.s3Client.send(command);
-      return true;
-    } catch {
-      return false;
+      await fs.unlink(filePath);
+    } catch (error) {
+      console.error('Failed to delete file:', error);
     }
   }
-}
 
+  async getSignedUrl(key: string, expiresIn: number = 3600): Promise<string> {
+    // For local storage, just return the local URL
+    return `/uploads/${key}`;
+  }
+}
